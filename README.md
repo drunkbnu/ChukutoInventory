@@ -1,12 +1,10 @@
 # ChukutoInventory
 
-Programa en C++ que lee un archivo de texto, guarda los datos en un objeto e imprime uno de los datos.
-
 Pronto será un programa de inventario.
 
 ## Requisitos
 
-- Compilador de C++ que soporte C++20
+- Compilador de C++
 - CMake
 
 ## Instalación
@@ -38,6 +36,9 @@ cd bin/
 ./ChukutoInventory
 ```
 
-Es necesario crear la carpeta `data/` en la carpeta donde se encuentra el ejecutable, y dentro de la carpeta `data/` un archivo de texto con al menos 4 líneas llamado `1.txt` para probar la lectura.
+Mostrará un menú con las distintas opciones que debe tener el programa de inventario. Al seleccionar una opción correcta, se mostrará el mensaje **Opción no implementada**. De lo contrario, se mostrará el mensaje **Opción invalida**.
 
-No arrojará un error, simplemente no imprime nada si no existe dicho archivo.
+## Problemas
+
+- Al introducir texto en lugar de un número, el programa se vuelve loco.
+    - Esto sucede porque se intenta guardar el texto introducido en una variable numérica. Pronto se corregirá, utilizando `cin.get()` en lugar de siempre esperar por una línea.
