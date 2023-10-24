@@ -1,10 +1,10 @@
-#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include "clases/Interfaz.hpp"
 
-using std::cin;
 using std::string;
+using std::stringstream;
 using std::vector;
 
 Interfaz interfaz("ChukutoInventory - Menú Principal", "(C) 2023 achgee");
@@ -26,7 +26,9 @@ int main(int argc, char const *argv[]) {
         "6. Salir"
     };
 
-    int opcion = 0;
+    int opcion;
+    string vacio = string();
+    stringstream stream(vacio);
 
     while(opcion != 6) {
         interfaz.establecerCabecera("ChukutoInventory - Menú Principal");
@@ -34,7 +36,10 @@ int main(int argc, char const *argv[]) {
         interfaz.limpiarContenido();
         interfaz.mostrarMenu(opciones);
 
-        cin >> opcion;
+        stream << interfaz.leerLinea();
+        stream >> opcion;
+        stream.clear();
+        stream.str(vacio);
 
         switch (opcion) {
             case 1:
@@ -55,12 +60,12 @@ int main(int argc, char const *argv[]) {
             case 6:
                 break;
             default:
-                interfaz.mostrarPopup("Opción invalida");
+                interfaz.mostrarPopup("Opción inválida");
                 break;
         }
     }
 
-    system("clear");
+    interfaz.cerrar();
 
     return 0;
 }

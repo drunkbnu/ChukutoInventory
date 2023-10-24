@@ -1,13 +1,75 @@
-#include <iostream>
+#include <format>
 #include <string>
-#include <sys/ioctl.h>
+#if PLATFORM == Linux
+#include <ncurses.h>
+#elif PLATFORM == Windows
+// TODO: Determinar que librería usar en Windows para manejar la consola
+#endif
 #include "Interfaz.hpp"
 
-using std::cin;
-using std::cout;
 using std::string;
 
-struct winsize tamaño;
+#if PLATFORM == Linux
+WINDOW ventana;
+#endif
+
+// Funciones para manejar la consola
+// Siempre se usan estas funciones, ya que dependen del sistema operativo
+
+void Interfaz::mover(int y, int x) {
+    #if PLATFORM == Linux
+    move(--y, --x);
+    refresh();
+    #elif PLATFORM == Windows
+    // TODO
+    #endif
+}
+
+void Interfaz::escribir(const char *texto) {
+    #if PLATFORM == Linux
+    addstr(texto);
+    refresh();
+    #elif PLATFORM == Windows
+    // TODO
+    #endif
+}
+
+void Interfaz::escribir(string texto) {
+    #if PLATFORM == Linux
+    addstr(texto.c_str());
+    refresh();
+    #elif PLATFORM == Windows
+    // TODO
+    #endif
+}
+
+string Interfaz::leerLinea() {
+    char *texto;
+    getstr(texto);
+    return string(texto);
+}
+
+// Pronto será una función para utilizar cualquier combinación de colores, no solo alternar entre blanco y negro
+
+void Interfaz::alternarColores() {
+    if (this->invertido) {
+        #if PLATFORM == Linux
+        attroff(COLOR_PAIR(2));
+        refresh();
+        #elif PLATFORM == Windows
+        // TODO
+        #endif
+    } else {
+        #if PLATFORM == Linux
+        attron(COLOR_PAIR(2));
+        refresh();
+        #elif PLATFORM == Windows
+        // TODO
+        #endif
+    }
+
+    this->invertido = !this->invertido;
+}
 
 // Funciones para establecer y obtener la cabecera y el pie
 // Se crearon para evitar modificación directa de las variables
@@ -39,10 +101,18 @@ Interfaz::Interfaz(string cabecera, string pie) {
     this->cabecera = cabecera;
     this->pie = pie;
 
-    system("clear");
-
-    // Función para obtener el tamaño de la consola en Linux
-    ioctl(fileno(stdout), TIOCGWINSZ, &tamaño);
+    #if PLATFORM == Linux
+    ventana = *initscr();
+    curs_set(1);
+    start_color();
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+    init_pair(2, COLOR_BLACK, COLOR_WHITE);
+    getmaxyx(&ventana, alto, ancho);
+    #elif PLATFORM == Windows
+    system("cls");
+    ancho = 80;
+    alto = 24;
+    #endif
 
     mostrarCabecera();
     mostrarPie();
@@ -52,19 +122,30 @@ Interfaz::Interfaz(string cabecera, string pie) {
 // Se utilizan códigos ANSI para cambiar la posición del cursor, y el color del texto y el fondo
 
 void Interfaz::mostrarCabecera() {
-    cout << "\x1b[1;1f\x1b[1;7m" << string(tamaño.ws_col * 3, ' ') << "\x1b[2;" << tamaño.ws_col / 2 - cabecera.length() / 2 << "f"
-        << cabecera << "\x1b[0m";
+    alternarColores();
+    mover(1, 1);
+    escribir(string(ancho * 3, ' '));
+    escribir("        ");
+    mover(2, ancho / 2 - cabecera.length() / 2);
+    escribir(cabecera);
+    alternarColores();
 }
 
 void Interfaz::mostrarPie() {
-    cout << "\x1b[" << tamaño.ws_row - 2 << ";1f\x1b[1;7m" << string(tamaño.ws_col * 3, ' ') << "\x1b[" << tamaño.ws_row - 1 << ";"
-        << tamaño.ws_col / 2 - pie.length() / 2 << "f" << pie << "\x1b[0m";
+    alternarColores();
+    mover(alto - 2, 1);
+    escribir(string(ancho * 3, ' '));
+    mover(alto - 1, ancho / 2 - pie.length() / 2);
+    escribir(pie);
+    alternarColores();
 }
 
 // Funciones para mostrar distinto contenido, sin alterar el resto de la pantalla
+// Deben usar las funciones genéricas especificadas arriba
 
 void Interfaz::limpiarContenido() {
-    cout << "\x1b[4;1f" << string(tamaño.ws_col * (tamaño.ws_row - 6), ' ');
+    mover(4, 1);
+    escribir(string(ancho * (alto - 6), ' '));
 }
 
 void Interfaz::mostrarMenu(vector<string> opciones) {
@@ -81,28 +162,37 @@ void Interfaz::mostrarMenu(vector<string> opciones) {
     // Ahora si se muestran las opciones
 
     for(string opcion : opciones) {
-        cout << "\x1b[" << y << ";" << tamaño.ws_col / 2 - longitud / 2 << "f" << opcion;
+        mover(y, ancho / 2 - longitud / 2);
+        escribir(opcion);
 
         y++;
     }
 
-    cout << "\x1b[" << ++y << ";" << tamaño.ws_col / 2 - longitud / 2 << "f" << "Opción: ";
+    mover(++y, ancho / 2 - longitud / 2);
+    escribir("Opción: ");
 }
 
 void Interfaz::mostrarPopup(string mensaje) {
     int longitud = mensaje.size();
 
-    cout << "\x1b[1;7m";
+    alternarColores();
 
     for (int y = -1; y < 2; y++) {
-        cout << "\x1b[" << tamaño.ws_row / 2 + y << ";" << tamaño.ws_col / 2 - longitud / 2 << "f" << string(longitud + 2, ' ');
+        mover(alto / 2 + y, ancho / 2 - longitud / 2);
+        escribir(string(longitud + 2, ' '));
     }
 
-    cout << "\x1b[" << tamaño.ws_row / 2 << ";" << tamaño.ws_col / 2 - longitud / 2 + 1 << "f" << mensaje << "\x1b[0m";
+    mover(alto / 2, ancho / 2 - longitud / 2 + 1);
+    escribir(mensaje);
+    alternarColores();
+    
+    getchar();
+}
 
-    // Por alguna razón el primer uso de la función detecta Enter
-    // Se llama dos veces para asegurar que el usuario presione una tecla
-
-    cin.get();
-    cin.get();
+void Interfaz::cerrar() {
+    #if PLATFORM == Linux
+    endwin();
+    #elif PLATFORM == Windows
+    system("cls");
+    #endif
 }
