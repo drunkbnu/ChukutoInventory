@@ -8,8 +8,11 @@ set(EXECUTABLE_OUTPUT_PATH "bin")
 file(GLOB clases CONFIGURE_DEPENDS
 src/clases/*.cpp
 )
+file(GLOB principal CONFIGURE_DEPENDS
+src/*.cpp
+)
 
-add_executable(ChukutoInventory src/main.cpp ${clases})
+add_executable(ChukutoInventory src/main.cpp ${clases} ${principal})
 
 if(UNIX)
     add_compile_definitions(UNIX)

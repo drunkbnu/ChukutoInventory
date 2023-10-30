@@ -1,4 +1,5 @@
 #include <iostream>
+
 using std::string;
 
 class Bien {
@@ -9,5 +10,4 @@ class Bien {
         string modelo;
 
         Bien(string nro, string tipo, string marca, string modelo);
-        static Bien desde_archivo(string ruta);
 };

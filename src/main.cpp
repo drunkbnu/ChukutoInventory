@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "clases/Interfaz.hpp"
+#include "Programa.hpp"
 
 using std::string;
 using std::stringstream;
@@ -9,12 +10,7 @@ using std::vector;
 
 Interfaz interfaz("ChukutoInventory - Menú Principal", "(C) 2023 achgee");
 
-void crearRegistro();
-void listarRegistros();
-void buscarRegistro();
-void actualizarRegistro();
-void eliminarRegistro();
-void opcionNoImplementada(string cabecera, string pie);
+int opcion;
 
 int main(int argc, char const *argv[]) {
     vector<string> opciones = {
@@ -26,7 +22,6 @@ int main(int argc, char const *argv[]) {
         "6. Salir"
     };
 
-    int opcion;
     string vacio = string();
     stringstream stream(vacio);
 
@@ -43,19 +38,19 @@ int main(int argc, char const *argv[]) {
 
         switch (opcion) {
             case 1:
-                crearRegistro();
+                crear();
                 break;
             case 2:
-                listarRegistros();
+                listar();
                 break;
             case 3:
-                buscarRegistro();
+                buscar();
                 break;
             case 4:
-                actualizarRegistro();
+                actualizar();
                 break;
             case 5:
-                eliminarRegistro();
+                eliminar();
                 break;
             case 6:
                 break;
@@ -68,31 +63,4 @@ int main(int argc, char const *argv[]) {
     interfaz.cerrar();
 
     return 0;
-}
-
-void crearRegistro() {
-    opcionNoImplementada("Creación de Registro", "");
-}
-
-void listarRegistros() {
-    opcionNoImplementada("Listado de Registros", "");
-}
-
-void buscarRegistro() {
-    opcionNoImplementada("Busqueda de Registro", "");
-}
-
-void actualizarRegistro() {
-    opcionNoImplementada("Actualización de Registro", "");
-}
-
-void eliminarRegistro() {
-    opcionNoImplementada("Eliminación de Registro", "");
-}
-
-void opcionNoImplementada(string cabecera, string pie) {
-    interfaz.establecerCabecera(cabecera);
-    interfaz.establecerPie(pie);
-    interfaz.limpiarContenido();
-    interfaz.mostrarPopup("Opción no implementada");
 }
