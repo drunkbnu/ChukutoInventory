@@ -1,74 +1,81 @@
 #include <format>
 #include <string>
-#if PLATFORM == Linux
+#ifdef UNIX
 #include <ncurses.h>
-#elif PLATFORM == Windows
-// TODO: Determinar que librería usar en Windows para manejar la consola
+#else
+#include <iostream>
+#include <locale>
+#include <Windows.h>
 #endif
 #include "Interfaz.hpp"
 
+using std::cin;
+using std::cout;
+using std::getline;
 using std::string;
-
-#if PLATFORM == Linux
-WINDOW ventana;
-#endif
 
 // Funciones para manejar la consola
 // Siempre se usan estas funciones, ya que dependen del sistema operativo
 
 void Interfaz::mover(int y, int x) {
-    #if PLATFORM == Linux
+    #ifdef UNIX
     move(--y, --x);
     refresh();
-    #elif PLATFORM == Windows
-    // TODO
+    #else
+    HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);  
+    COORD dwPos;
+    dwPos.X = --x;  
+    dwPos.Y = --y;  
+    SetConsoleCursorPosition(hcon, dwPos);  
     #endif
 }
 
 void Interfaz::escribir(const char *texto) {
-    #if PLATFORM == Linux
+    #ifdef UNIX
     addstr(texto);
     refresh();
-    #elif PLATFORM == Windows
-    // TODO
+    #else
+    cout << texto;
     #endif
 }
 
 void Interfaz::escribir(string texto) {
-    #if PLATFORM == Linux
+    #ifdef UNIX
     addstr(texto.c_str());
     refresh();
-    #elif PLATFORM == Windows
-    // TODO
+    #else
+    cout << texto;
     #endif
 }
 
 string Interfaz::leerLinea() {
+    #ifdef UNIX
     char *texto;
     getstr(texto);
     return string(texto);
+    #else
+    string texto;
+    getline(cin, texto);
+    return texto;
+    #endif
 }
 
 // Pronto será una función para utilizar cualquier combinación de colores, no solo alternar entre blanco y negro
 
 void Interfaz::alternarColores() {
-    if (this->invertido) {
-        #if PLATFORM == Linux
-        attroff(COLOR_PAIR(2));
-        refresh();
-        #elif PLATFORM == Windows
-        // TODO
-        #endif
-    } else {
-        #if PLATFORM == Linux
-        attron(COLOR_PAIR(2));
-        refresh();
-        #elif PLATFORM == Windows
-        // TODO
-        #endif
-    }
-
     this->invertido = !this->invertido;
+
+    #ifdef UNIX
+    if (this->invertido) {
+        attron(COLOR_PAIR(1));
+    } else {
+        attroff(COLOR_PAIR(1));
+    }
+    refresh();
+    #else
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, this->invertido ? 112 : 7);
+    #endif
 }
 
 // Funciones para establecer y obtener la cabecera y el pie
@@ -101,17 +108,21 @@ Interfaz::Interfaz(string cabecera, string pie) {
     this->cabecera = cabecera;
     this->pie = pie;
 
-    #if PLATFORM == Linux
-    ventana = *initscr();
+    #ifdef UNIX
+    WINDOW ventana = *initscr();
     curs_set(1);
     start_color();
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
-    init_pair(2, COLOR_BLACK, COLOR_WHITE);
+    init_pair(1, COLOR_BLACK, COLOR_WHITE);
     getmaxyx(&ventana, alto, ancho);
-    #elif PLATFORM == Windows
+    #else
     system("cls");
-    ancho = 80;
-    alto = 24;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    ancho = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    alto = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    SetConsoleTextAttribute(hConsole, 119);
+    setlocale(LC_ALL, ".UTF-8");
     #endif
 
     mostrarCabecera();
@@ -190,9 +201,11 @@ void Interfaz::mostrarPopup(string mensaje) {
 }
 
 void Interfaz::cerrar() {
-    #if PLATFORM == Linux
+    #ifdef UNIX
     endwin();
-    #elif PLATFORM == Windows
+    #else
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, 7);
     system("cls");
     #endif
 }

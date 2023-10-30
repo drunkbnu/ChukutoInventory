@@ -9,11 +9,10 @@ file(GLOB clases CONFIGURE_DEPENDS
 src/clases/*.cpp
 )
 
-add_compile_definitions(PLATFORM=${CMAKE_SYSTEM_NAME})
-
 add_executable(ChukutoInventory src/main.cpp ${clases})
 
 if(UNIX)
+    add_compile_definitions(UNIX)
     find_package(Curses REQUIRED)
     include_directories(${CURSES_INCLUDE_DIR})
     target_link_libraries(ChukutoInventory ${CURSES_LIBRARIES})

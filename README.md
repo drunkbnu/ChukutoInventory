@@ -4,7 +4,9 @@ Pronto será un programa de inventario.
 
 ## Requisitos
 
-- Compilador de C++
+- Compilador que soporte C++20
+    - GCC y Clang soportan C++20 parcialmente
+    - MSVC soporta C++20 en su totalidad
 - CMake
 
 ## Instalación
@@ -14,7 +16,9 @@ Se clona el repositorio, y dentro de la carpeta del proyecto se ejecuta CMake. E
 ```sh
 git clone git@github.com:achgee/ChukutoInventory.git
 cd ChukutoInventory
-cmake .
+mkdir build
+cd build
+cmake ..
 ```
 
 ## Construcción
@@ -22,23 +26,23 @@ cmake .
 Para constuir el proyecto después de modificar el código fuente, solo es necesario ejecutar un comando.
 
 ```sh
-make
+# Dentro de la carpeta ChukutoInventory/build
+cmake --build .
 ```
 
-El comando crea un archivo ejecutable dentro de la carpeta `bin/`
+El comando crea un archivo ejecutable dentro de la carpeta `build/bin/`. Dependiendo del entorno, éste puede crear carpetas adicionales.
 
 ## Uso
 
-Se entra a la carpeta donde se encuentra el ejecutable y se ejecuta el programa
+El programa se ejecuta desde la consola.
 
 ```sh
-cd bin/
-./ChukutoInventory
+# Dentro de la carpeta ChukutoInventory/build
+bin/ChukutoInventory
 ```
 
 Mostrará un menú con las distintas opciones que debe tener el programa de inventario. Al seleccionar una opción correcta, se mostrará el mensaje **Opción no implementada**. De lo contrario, se mostrará el mensaje **Opción invalida**.
 
 ## Problemas
 
-- Al introducir texto en lugar de un número, el programa se vuelve loco.
-    - Esto sucede porque se intenta guardar el texto introducido en una variable numérica. Pronto se corregirá, utilizando `cin.get()` en lugar de siempre esperar por una línea.
+- Al ejecutar el programa en Android con Termux, ocurre un error de memoria (**segfault**)
