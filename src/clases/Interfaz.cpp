@@ -1,10 +1,10 @@
 #include <format>
+#include <locale>
 #include <string>
 #ifdef UNIX
 #include <ncurses.h>
 #else
 #include <iostream>
-#include <locale>
 #include <Windows.h>
 #endif
 #include "Interfaz.hpp"
@@ -15,6 +15,16 @@ using std::cout;
 #endif
 using std::getline;
 using std::string;
+
+// Funciones para obtener el tamaño de la consola, sin acceder directamente a las variables
+
+int Interfaz::obtenerAncho() {
+    return ancho;
+}
+
+int Interfaz::obtenerAlto() {
+    return alto;
+}
 
 // Funciones para manejar la consola
 // Siempre se usan estas funciones, ya que dependen del sistema operativo
@@ -50,14 +60,14 @@ void Interfaz::escribir(string texto) {
     #endif
 }
 
-string Interfaz::leerLinea() {
+string Interfaz::leerLinea(int caracteres) {
     #ifdef UNIX
-    char *texto;
-    getstr(texto);
+    char texto[caracteres];
+    getnstr(texto, caracteres);
     return string(texto);
     #else
     string texto;
-    getline(cin, texto);
+    cin.getline(texto, caracteres);
     return texto;
     #endif
 }
@@ -111,11 +121,12 @@ Interfaz::Interfaz(string cabecera, string pie) {
     this->pie = pie;
 
     #ifdef UNIX
-    WINDOW ventana = *initscr();
+    WINDOW *ventana = initscr();
+    keypad(ventana, true);
     curs_set(1);
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
-    getmaxyx(&ventana, alto, ancho);
+    getmaxyx(ventana, alto, ancho);
     #else
     system("cls");
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -124,8 +135,9 @@ Interfaz::Interfaz(string cabecera, string pie) {
     ancho = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     alto = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     SetConsoleTextAttribute(hConsole, 119);
-    setlocale(LC_ALL, ".UTF-8");
     #endif
+
+    setlocale(LC_ALL, ".UTF-8");
 
     mostrarCabecera();
     mostrarPie();
@@ -185,17 +197,28 @@ void Interfaz::mostrarMenu(vector<string> opciones) {
     escribir("Opción: ");
 }
 
+void Interfaz::mostrarFormulario(vector<string> campos) {
+    int y = 5;
+
+    for(string campo : campos) {
+        mover(y, ancho / 2 - campo.size());
+        escribir(campo);
+
+        y++;
+    }
+}
+
 void Interfaz::mostrarPopup(string mensaje) {
     int longitud = mensaje.size();
 
     alternarColores();
 
     for (int y = -1; y < 2; y++) {
-        mover(alto / 2 + y, ancho / 2 - longitud / 2);
+        mover(alto / 2 + y, ancho / 2 - longitud / 2 - 1);
         escribir(string(longitud + 2, ' '));
     }
 
-    mover(alto / 2, ancho / 2 - longitud / 2 + 1);
+    mover(alto / 2, ancho / 2 - longitud / 2);
     escribir(mensaje);
     alternarColores();
     

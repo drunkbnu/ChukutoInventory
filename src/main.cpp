@@ -31,7 +31,7 @@ int main(int argc, char const *argv[]) {
         interfaz.limpiarContenido();
         interfaz.mostrarMenu(opciones);
 
-        stream << interfaz.leerLinea();
+        stream << interfaz.leerLinea(1);
         stream >> opcion;
         stream.clear();
         stream.str(vacio);
