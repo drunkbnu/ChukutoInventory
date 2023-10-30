@@ -9,8 +9,10 @@
 #endif
 #include "Interfaz.hpp"
 
+#ifndef UNIX
 using std::cin;
 using std::cout;
+#endif
 using std::getline;
 using std::string;
 
