@@ -8,6 +8,7 @@ Pronto será un programa de inventario.
     - GCC y Clang soportan C++20 parcialmente
     - MSVC soporta C++20 en su totalidad
 - CMake
+- Ncurses (_en caso de compilar en Linux_)
 
 ## Instalación
 
