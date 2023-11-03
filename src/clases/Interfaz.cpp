@@ -1,10 +1,10 @@
 #include <format>
+#include <iostream>
 #include <locale>
 #include <string>
 #ifdef UNIX
 #include <ncurses.h>
 #else
-#include <iostream>
 #include <Windows.h>
 #endif
 #include "Interfaz.hpp"
