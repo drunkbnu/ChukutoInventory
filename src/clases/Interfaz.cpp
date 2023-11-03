@@ -9,11 +9,6 @@
 #endif
 #include "Interfaz.hpp"
 
-#ifndef UNIX
-using std::cin;
-using std::cout;
-#endif
-using std::getline;
 using std::string;
 
 // Funciones para obtener el tamaño de la consola, sin acceder directamente a las variables
@@ -47,7 +42,7 @@ void Interfaz::escribir(const char *texto) {
     addstr(texto);
     refresh();
     #else
-    cout << texto;
+    std::cout << texto;
     #endif
 }
 
@@ -56,7 +51,7 @@ void Interfaz::escribir(string texto) {
     addstr(texto.c_str());
     refresh();
     #else
-    cout << texto;
+    std::cout << texto;
     #endif
 }
 
@@ -67,7 +62,7 @@ string Interfaz::leerLinea(int caracteres) {
     return string(texto);
     #else
     string texto;
-    cin.getline(texto, caracteres);
+    std::cin.getline(texto, caracteres);
     return texto;
     #endif
 }
@@ -222,7 +217,7 @@ void Interfaz::mostrarPopup(string mensaje) {
     escribir(mensaje);
     alternarColores();
     
-    getchar();
+    std::getchar();
 }
 
 void Interfaz::cerrar() {

@@ -1,7 +1,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "clases/Interfaz.hpp"
 #include "Programa.hpp"
 
 using std::string;

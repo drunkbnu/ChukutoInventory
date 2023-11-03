@@ -1,10 +1,12 @@
 #include <format>
 #include <fstream>
+#include <string>
 #include "Programa.hpp"
+#include "clases/Bien.hpp"
 
-using std::format;
 using std::fstream;
 using std::getline;
+using std::string;
 
 void crear() {
     interfaz.establecerCabecera("Creación de Registro");
@@ -19,7 +21,7 @@ void crear() {
 
     archivo.close();
 
-    interfaz.establecerPie(format("Creando registro #{}", num_registro));
+    interfaz.establecerPie(std::format("Creando registro #{}", num_registro));
     interfaz.limpiarContenido();
     
     vector<string> campos = {
@@ -31,18 +33,30 @@ void crear() {
 
     interfaz.mostrarFormulario(campos);
 
-    int y = 5;
-
     vector<string> valores(4);
     vector<int> longitudes = {
         10, 50, 20, 20
     };
     
     for (int i = 0; i < valores.size(); i++) {
-        interfaz.mover(y, interfaz.obtenerAncho() / 2);
-        valores[i] = interfaz.leerLinea(longitudes[i]);
+        interfaz.mover(i + 5, interfaz.obtenerAncho() / 2);
 
-        y++;
+        if (valores[i] != "") {
+            interfaz.escribir(valores[i]);
+            continue;
+        }
+
+        string valor = interfaz.leerLinea(longitudes[i]);
+
+        if (valor.find('|') < valor.size()) {
+            interfaz.mostrarPopup("El texto no puede contener el caracter |");
+            interfaz.limpiarContenido();
+            interfaz.mostrarFormulario(campos);
+            i = -1;
+            continue;
+        }
+
+        valores[i] = valor;
     }
 
     archivo.open("registros.txt", std::ios::app);
@@ -52,11 +66,9 @@ void crear() {
         return;
     }
 
-    for (int i = 0; i < valores.size(); i++) {
-        archivo << valores[i] << "|";
-    }
+    Bien bien(valores[0], valores[1], valores[2], valores[3]);
 
-    archivo << std::endl;
+    archivo << bien.generarTexto() << std::endl;
     archivo.close();
 
     interfaz.mostrarPopup("Registro creado satisfactoriamente");

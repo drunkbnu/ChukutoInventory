@@ -15,6 +15,8 @@ class Interfaz {
         string obtenerPie();
         string leerLinea(int caracteres);
 
+        void escribir(const char *texto);
+        void escribir(string texto);
         void establecerCabecera(string cabecera);
         void establecerPie(string pie);
         void mover(int y, int x);
@@ -32,8 +34,6 @@ class Interfaz {
         string cabecera;
         string pie;
 
-        void escribir(const char *texto);
-        void escribir(string texto);
         void alternarColores();
         void mostrarCabecera();
         void mostrarPie();
