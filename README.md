@@ -42,8 +42,19 @@ El programa se ejecuta desde la consola.
 bin/ChukutoInventory
 ```
 
-Mostrará un menú con las distintas opciones que debe tener el programa de inventario. Al seleccionar una opción correcta, se mostrará el mensaje **Opción no implementada**. De lo contrario, se mostrará el mensaje **Opción invalida**.
+Mostrará un menú con las distintas opciones que debe tener el programa de inventario. Por ahora solo está implementada la opción **Creación de registro**
 
-## Problemas
+Al seleccionar una opción del listado no implementada, se mostrará el mensaje **Opción no implementada**. De lo contrario, se mostrará el mensaje **Opción invalida**.
 
-- Al ejecutar el programa en Android con Termux, ocurre un error de memoria (**segfault**)
+### Creación de registro
+
+En dicho procedimiento, se solicitan 4 datos:
+
+- Número de bien
+- Departamento
+- Marca
+- Modelo
+
+Si alguno de los datos contiene el caracter **|**, se mostrará un mensaje de error, y se debe volver a introducir el dato erróneo.
+
+Después de introducir todos los datos, se guardan los mismos junto con la fecha de creación en el archivo `registros.txt`
