@@ -121,7 +121,7 @@ Interfaz::Interfaz(string cabecera, string pie) {
     curs_set(1);
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
-    getmaxyx(ventana, alto, ancho);
+    getmaxyx(ventana, _alto, _ancho);
     #else
     system("cls");
     CONSOLE_SCREEN_BUFFER_INFO csbi;
