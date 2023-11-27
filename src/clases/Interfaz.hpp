@@ -8,33 +8,34 @@ using std::vector;
 
 class Interfaz {
     public:
-        int obtenerAncho();
-        int obtenerAlto();
+        int ancho();
+        int alto();
 
-        string obtenerCabecera();
-        string obtenerPie();
+        string cabecera();
+        string pie();
         string leerLinea(int caracteres);
+        char caracter();
 
         void escribir(const char *texto);
         void escribir(string texto);
-        void establecerCabecera(string cabecera);
-        void establecerPie(string pie);
+        void cabecera(string cabecera);
+        void pie(string pie);
         void mover(int y, int x);
-        void limpiarContenido();
-        void mostrarMenu(vector<string> opciones);
-        void mostrarFormulario(vector<string> campos);
-        void mostrarPopup(string mensaje);
+        void limpiar();
+        void menu(vector<string> opciones);
+        void formulario(vector<string> campos);
+        void popup(string mensaje);
         void cerrar();
 
         Interfaz(string cabecera, string pie);
     private:
-        int ancho;
-        int alto;
+        int _ancho;
+        int _alto;
         bool invertido;
-        string cabecera;
-        string pie;
+        string _cabecera;
+        string _pie;
 
-        void alternarColores();
+        void invertir();
         void mostrarCabecera();
         void mostrarPie();
 };

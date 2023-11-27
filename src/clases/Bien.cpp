@@ -9,29 +9,19 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-// Éste constructor se utiliza únicamente para nuevos registros
-// Se pasan los campos introducidos manualmente, y se utiliza la fecha del sistema
-// como la fecha de incorporación
+// Crea un objeto, y establece la fecha de incorporación, en formato ISO 8601
 
-Bien::Bien(string nro, string dpto, string marca, string modelo) :
-    nro(nro), dpto(dpto), marca(marca), modelo(modelo) {
-    // "chrono" es una librería estándar en C++20 para trabajar cómodamente con fecha y hora
-
+Bien::Bien(string &nro, string &dpto, string &marca, string &modelo) :
+    _nro(nro), _dpto(dpto), _marca(marca), _modelo(modelo) {
     std::chrono::time_point tiempo = std::chrono::system_clock::now();
-
-    // Se escribe la fecha y hora en formato ISO, formato estándar para escribir el tiempo
-    // Ésto es para permitir la construcción de instancias de tiempo en un futuro
-
     fecha_incorp = std::format("{:%FT%TZ}", tiempo);
     fecha_modif = "-";
     fecha_desinc = "-";
 };
 
-// Éste constructor se utilizará para el listado de registros
-// La idea es guardar todos los registros en una colección, y no volver a leer el archivo
-// para cambiar de página en el listado
+// Crea un objeto a partir del texto que se guarda en el archivo
 
-Bien::Bien(string texto) {
+Bien::Bien(string &texto) {
     string campoErroneo = "???";
     vector<string> campos(7);
 
@@ -41,27 +31,30 @@ Bien::Bien(string texto) {
 
     string campo;
     stringstream stream(texto);
-    int i;
+    int i = 0;
 
     while (std::getline(stream, campo, '|')) {
         campos[i] = campo;
         i++;
     }
+
+    _nro = campos[0];
+    _dpto = campos[1];
+    _marca = campos[2];
+    _modelo = campos[3];
+    fecha_incorp = campos[4];
+    fecha_modif = campos[5];
+    fecha_desinc = campos[6];
 }
 
-// La función que genera el texto que posteriormente se guardará en el archivo
-// Se utiliza el caracter | como separador, ya que si se separan los campos
-// con espacios, será imposible crear un objeto si algún campo tiene un espacio
+// Genera el texto para guardar en el archivo
 
-string Bien::generarTexto() {
+string Bien::texto() {
     vector<string> campos = {
-        nro, dpto, marca, modelo, fecha_incorp, fecha_modif, fecha_desinc
+        _nro, _dpto, _marca, _modelo, fecha_incorp, fecha_modif, fecha_desinc
     };
-    string texto = "";
+    string texto;
     stringstream stream(texto);
-
-    // Ésta es una iteración especialmente para vectores, que elimina la necesidad de
-    // manipular contadores
 
     for (string &campo : campos) {
         stream.write(campo.c_str(), campo.size());
@@ -71,4 +64,50 @@ string Bien::generarTexto() {
     texto = stream.str();
 
     return texto;
+}
+
+// Crea un vector con todos los campos del objeto
+
+vector<string> Bien::_vector() {
+    return { _nro, _dpto, _marca, _modelo, fechaIncorp(), fechaModif(), fechaDesinc() };
+}
+
+// Getters y setters para los distintos campos del bien
+
+string Bien::nro() { return _nro; }
+string Bien::dpto() { return _dpto; }
+string Bien::marca() { return _marca; }
+string Bien::modelo() { return _modelo; }
+void Bien::nro(string valor) { _nro = valor; actualizarFechaModif(); }
+void Bien::dpto(string valor) { _dpto = valor; actualizarFechaModif(); }
+void Bien::marca(string valor) { _marca = valor; actualizarFechaModif(); }
+void Bien::modelo(string valor) { _modelo = valor; actualizarFechaModif(); }
+
+// Actualiza la fecha de modificación
+
+void Bien::actualizarFechaModif() {
+    std::chrono::time_point tiempo = std::chrono::system_clock::now();
+    fecha_modif = std::format("{:%FT%TZ}", tiempo);
+}
+
+// Devuelven las distintas fechas en formato local y legible
+
+string Bien::fechaIncorp() { return fechaLegible(fecha_incorp); }
+string Bien::fechaModif() { return fechaLegible(fecha_modif); }
+string Bien::fechaDesinc() { return fechaLegible(fecha_desinc); }
+
+string Bien::fechaLegible(string& fecha) {
+    stringstream stream(fecha);
+    std::chrono::system_clock::time_point tiempo;
+    stream >> std::chrono::parse("%FT%TZ", tiempo);
+
+    if (stream.fail()) {
+        return "-";
+    }
+    else {
+        auto tiempo_hh = std::chrono::zoned_time(std::chrono::current_zone(), tiempo);
+        auto tiempo_local = tiempo_hh.get_local_time();
+
+        return std::format("{:%d/%m/%Y, %I:%M %p}", tiempo_local);
+    }
 }

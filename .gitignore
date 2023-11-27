@@ -4,5 +4,9 @@ build/
 
 # Carpetas de proyecto
 
+.vs/
 bin/
 .vscode
+out/
+.editorconfig
+CMakeSettings.json

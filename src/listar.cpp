@@ -1,8 +1,8 @@
 #include "Programa.hpp"
 
 void listar() {
-    interfaz.establecerCabecera("Listado de Registros");
-    interfaz.establecerPie("");
-    interfaz.limpiarContenido();
-    interfaz.mostrarPopup("Opción no implementada");
+    interfaz.cabecera("Listado de Registros");
+    interfaz.pie("");
+    interfaz.limpiar();
+    interfaz.popup("Opción no implementada");
 }

@@ -9,8 +9,6 @@ using std::vector;
 
 Interfaz interfaz("ChukutoInventory - Menú Principal", "(C) 2023 achgee");
 
-int opcion;
-
 int main(int argc, char const *argv[]) {
     vector<string> opciones = {
         "1. Crear registro",
@@ -20,20 +18,21 @@ int main(int argc, char const *argv[]) {
         "5. Eliminar registro",
         "6. Salir"
     };
-
-    string vacio = string();
-    stringstream stream(vacio);
+    int opcion;
+    stringstream stream;
+    string texto;
 
     while(opcion != 6) {
-        interfaz.establecerCabecera("ChukutoInventory - Menú Principal");
-        interfaz.establecerPie("(C) 2023 achgee");
-        interfaz.limpiarContenido();
-        interfaz.mostrarMenu(opciones);
+        interfaz.cabecera("ChukutoInventory - Menú Principal");
+        interfaz.pie("(C) 2023 achgee");
+        interfaz.limpiar();
+        interfaz.menu(opciones);
 
-        stream << interfaz.leerLinea(1);
+        texto = interfaz.leerLinea(1);
+        stream << texto;
         stream >> opcion;
         stream.clear();
-        stream.str(vacio);
+        stream.str(texto);
 
         switch (opcion) {
             case 1:
@@ -54,7 +53,7 @@ int main(int argc, char const *argv[]) {
             case 6:
                 break;
             default:
-                interfaz.mostrarPopup("Opción inválida");
+                interfaz.popup("Opción inválida");
                 break;
         }
     }

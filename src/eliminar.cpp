@@ -1,8 +1,8 @@
 #include "Programa.hpp"
 
 void eliminar() {
-    interfaz.establecerCabecera("Eliminación de Registro");
-    interfaz.establecerPie("");
-    interfaz.limpiarContenido();
-    interfaz.mostrarPopup("Opción no implementada");
+    interfaz.cabecera("Eliminación de Registro");
+    interfaz.pie("");
+    interfaz.limpiar();
+    interfaz.popup("Opción no implementada");
 }

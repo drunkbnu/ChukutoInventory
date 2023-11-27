@@ -1,28 +1,36 @@
 #include <format>
 #include <fstream>
+#include <map>
 #include <string>
 #include "Programa.hpp"
 #include "clases/Bien.hpp"
 
 using std::fstream;
-using std::getline;
+using std::map;
 using std::string;
 
 void crear() {
-    interfaz.establecerCabecera("Creación de Registro");
+    interfaz.cabecera("Creación de Registro");
 
-    fstream archivo("registros.txt", std::ios::in);
-    int num_registro = 1;
-    string linea;
+    fstream archivo("bienes.txt", std::ios::in);
+    map<string, Bien> bienes;
+    string linea, nro;
 
-    while (getline(archivo, linea)) {
-        num_registro++;
+    while (std::getline(archivo, linea)) {
+        Bien bien(linea);
+        bienes.insert(std::make_pair(bien.nro(), bien));
     }
 
     archivo.close();
+    archivo.open("bienes.txt", std::ios::app);
 
-    interfaz.establecerPie(std::format("Creando registro #{}", num_registro));
-    interfaz.limpiarContenido();
+    if (!archivo.is_open()) {
+        interfaz.popup("No se pudo abrir el archivo de bienes");
+        return;
+    }
+
+    interfaz.pie(std::format("Creando registro #{}", bienes.size() + 1));
+    interfaz.limpiar();
     
     vector<string> campos = {
         "# Bien: ",
@@ -31,7 +39,7 @@ void crear() {
         "Modelo: "
     };
 
-    interfaz.mostrarFormulario(campos);
+    interfaz.formulario(campos);
 
     vector<string> valores(4);
     vector<int> longitudes = {
@@ -39,7 +47,7 @@ void crear() {
     };
     
     for (int i = 0; i < valores.size(); i++) {
-        interfaz.mover(i + 5, interfaz.obtenerAncho() / 2);
+        interfaz.mover(i + 5, interfaz.ancho() / 2);
 
         if (valores[i] != "") {
             interfaz.escribir(valores[i]);
@@ -48,10 +56,18 @@ void crear() {
 
         string valor = interfaz.leerLinea(longitudes[i]);
 
+        if (i == 0 && bienes.count(valor)) {
+            interfaz.popup("Ya existe un registro con el mismo número de bien");
+            interfaz.limpiar();
+            interfaz.formulario(campos);
+            i = -1;
+            continue;
+        }
+
         if (valor.find('|') < valor.size()) {
-            interfaz.mostrarPopup("El texto no puede contener el caracter |");
-            interfaz.limpiarContenido();
-            interfaz.mostrarFormulario(campos);
+            interfaz.popup("El texto no puede contener el caracter |");
+            interfaz.limpiar();
+            interfaz.formulario(campos);
             i = -1;
             continue;
         }
@@ -59,17 +75,10 @@ void crear() {
         valores[i] = valor;
     }
 
-    archivo.open("registros.txt", std::ios::app);
-
-    if (!archivo.is_open()) {
-        interfaz.mostrarPopup("No se pudo abrir el archivo de registros");
-        return;
-    }
-
     Bien bien(valores[0], valores[1], valores[2], valores[3]);
 
-    archivo << bien.generarTexto() << std::endl;
+    archivo << bien.texto() << std::endl;
     archivo.close();
 
-    interfaz.mostrarPopup("Registro creado satisfactoriamente");
+    interfaz.popup("Registro creado satisfactoriamente");
 }
