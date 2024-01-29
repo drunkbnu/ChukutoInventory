@@ -1,6 +1,6 @@
 # ChukutoInventory
 
-Pronto será un programa de inventario.
+Un programa de inventario sin futuro.
 
 ## Requisitos
 
@@ -15,7 +15,7 @@ Pronto será un programa de inventario.
 Se clona el repositorio, y dentro de la carpeta del proyecto se crea una carpeta de construcción, en la cual se ejecuta CMake. Esto solo se realiza una vez.
 
 ```sh
-git clone git@github.com:achgee/ChukutoInventory.git
+git clone git@github.com:drunkbnu/ChukutoInventory.git
 cd ChukutoInventory
 mkdir build
 cd build
@@ -59,6 +59,10 @@ Si alguno de los datos contiene el caracter **|**, se mostrará un mensaje de er
 
 Después de introducir todos los datos, se guardan los mismos junto con la fecha de creación en el archivo `bienes.txt`
 
+### Listado de registros
+
+Muestra todos los registros. El listado se ajusta al tamaño de la terminal, e incluye paginación.
+
 ### Busqueda de registro
 
 Se solicita el número de bien, ya que es un valor único. De encontrarse un bien con dicho número, se mostraran todos los datos del bien, incluyendo las fechas de incorporación, modificación y desincorporación.
@@ -66,3 +70,7 @@ Se solicita el número de bien, ya que es un valor único. De encontrarse un bie
 ### Actualización de registro
 
 Se solicita el número de bien. De encontrarse un bien con dicho número, se mostrará un menú con opciones para ver los datos del bien, o modificar ciertos campos. Al modificar cualquier campo, se agrega la fecha de modificación.
+
+### Eliminacion de registro
+
+Se solicita el número de bien. De encontrarse un bien con dicho número, se mostrará un menú con opciones para ver los datos del bien, o eliminar el registro. De seleccionar la opción de eliminar, no se eliminará por completo. Se guardará en un archivo excluido por el sistema.
