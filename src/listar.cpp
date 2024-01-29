@@ -53,7 +53,7 @@ void listar() {
 
         c++;
 
-        if (c == (h - 8)) {
+        if (c == (h - 8) && p + c < bienes.size()) {
             interfaz.pie(std::format("Mostrando registros {}-{} de {}", p + 1, p + c, bienes.size()));
 
             interfaz.caracter();

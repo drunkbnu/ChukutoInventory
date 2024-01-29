@@ -1,3 +1,4 @@
+#include <format>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -9,6 +10,16 @@ using std::fstream;
 using std::pair;
 using std::string;
 using std::stringstream;
+
+vector<string> campos = {
+    "departamento", "usuario", "marca", "modelo"
+}, mensajes = {
+    "Departamento actualizado",
+    "Usuario actualizado",
+    "Marca actualizada",
+    "Modelo actualizado"
+};
+void modificar(Bien &bien, int campo);
 
 void actualizar() {
     interfaz.cabecera("Actualización de Registro");
@@ -95,36 +106,16 @@ void actualizar() {
                         interfaz.caracter();
                         break;
                     case 2:
-                        interfaz.cabecera("Modificando departamento");
-                        interfaz.limpiar();
-                        interfaz.formulario({ "Departamento: " });
-                        interfaz.mover(5, interfaz.ancho() / 2);
-                        bien.dpto(interfaz.leerLinea(100));
-                        interfaz.popup("Departamento actualizado");
+                        modificar(bien, 0);
                         break;
                     case 3:
-                        interfaz.cabecera("Modificando usuario");
-                        interfaz.limpiar();
-                        interfaz.formulario({ "Usuario: " });
-                        interfaz.mover(5, interfaz.ancho() / 2);
-                        bien.usuario(interfaz.leerLinea(30));
-                        interfaz.popup("Usuario actualizado");
+                        modificar(bien, 1);
                         break;  
                     case 4:
-                        interfaz.cabecera("Modificando marca");
-                        interfaz.limpiar();
-                        interfaz.formulario({ "Marca: " });
-                        interfaz.mover(5, interfaz.ancho() / 2);
-                        bien.marca(interfaz.leerLinea(30));
-                        interfaz.popup("Marca actualizada");
+                        modificar(bien, 2);
                         break;
                     case 5:
-                        interfaz.cabecera("Modificando modelo");
-                        interfaz.limpiar();
-                        interfaz.formulario({ "Modelo: " });
-                        interfaz.mover(5, interfaz.ancho() / 2);
-                        bien.modelo(interfaz.leerLinea(30));
-                        interfaz.popup("Modelo actualizado");
+                        modificar(bien, 3);
                         break;
                     case 6:
                         break;
@@ -146,4 +137,26 @@ void actualizar() {
 
     if (!encontrado)
         interfaz.popup("No se encontró ningún registro");
+}
+
+void modificar(Bien &bien, int campo) {
+    interfaz.cabecera(std::format("Modificando {}", campos[campo]));
+    interfaz.limpiar();
+    interfaz.formulario({std::format("{}: ", campos[campo])});
+    interfaz.mover(5, interfaz.ancho() / 2);
+    switch (campo) {
+        case 0:
+            bien.dpto(interfaz.leerLinea(100));
+            break;
+        case 1:
+            bien.usuario(interfaz.leerLinea(30));
+            break;
+        case 2:
+            bien.marca(interfaz.leerLinea(30));
+            break;
+        case 3:
+            bien.modelo(interfaz.leerLinea(30));
+            break;
+    }
+    interfaz.popup(mensajes[campo]);
 }
