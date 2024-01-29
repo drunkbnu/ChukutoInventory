@@ -35,15 +35,16 @@ void crear() {
     vector<string> campos = {
         "# Bien: ",
         "Departamento: ",
+        "Usuario: ",
         "Marca: ",
         "Modelo: "
     };
 
     interfaz.formulario(campos);
 
-    vector<string> valores(4);
+    vector<string> valores(5);
     vector<int> longitudes = {
-        10, 50, 20, 20
+        15, 100, 30, 30, 30
     };
     
     for (int i = 0; i < valores.size(); i++) {
@@ -75,7 +76,7 @@ void crear() {
         valores[i] = valor;
     }
 
-    Bien bien(valores[0], valores[1], valores[2], valores[3]);
+    Bien bien(valores[0], valores[1], valores[2], valores[3], valores[4]);
 
     archivo << bien.texto() << std::endl;
     archivo.close();

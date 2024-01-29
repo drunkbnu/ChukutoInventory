@@ -7,7 +7,7 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-Interfaz interfaz("ChukutoInventory - Menú Principal", "(C) 2023 achgee");
+Interfaz interfaz("ChukutoInventory - Menú Principal", "(C) 2023-2024 drunkbnu");
 
 int main(int argc, char const *argv[]) {
     vector<string> opciones = {
@@ -24,7 +24,7 @@ int main(int argc, char const *argv[]) {
 
     while(opcion != 6) {
         interfaz.cabecera("ChukutoInventory - Menú Principal");
-        interfaz.pie("(C) 2023 achgee");
+        interfaz.pie("(C) 2023-2024 drunkbnu");
         interfaz.limpiar();
         interfaz.menu(opciones);
 

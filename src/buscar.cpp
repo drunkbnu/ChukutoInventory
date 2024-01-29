@@ -44,6 +44,7 @@ void buscar() {
             vector<string> campos = {
                 "# Bien: ",
                 "Departamento: ",
+                "Usuario: ",
                 "Marca: ",
                 "Modelo: ",
                 "Fecha incorp.: ",

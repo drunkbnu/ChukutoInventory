@@ -45,12 +45,14 @@ void actualizar() {
             vector<string> valores, opciones = {
                 "1. Ver datos",
                 "2. Modificar departamento",
-                "3. Modificar marca",
-                "4. Modificar modelo",
-                "5. Volver"
+                "3. Modificar usuario",
+                "4. Modificar marca",
+                "5. Modificar modelo",
+                "6. Volver"
             }, campos = {
                 "# Bien: ",
                 "Departamento: ",
+                "Usuario: ",
                 "Marca: ",
                 "Modelo: ",
                 "Fecha incorp.: ",
@@ -64,7 +66,7 @@ void actualizar() {
 
             interfaz.menu(opciones);
 
-            while (opcion != 5) {
+            while (opcion != 6) {
                 interfaz.cabecera("Registro encontrado");
                 interfaz.pie("");
                 interfaz.limpiar();
@@ -97,23 +99,34 @@ void actualizar() {
                         interfaz.limpiar();
                         interfaz.formulario({ "Departamento: " });
                         interfaz.mover(5, interfaz.ancho() / 2);
-                        bien.dpto(interfaz.leerLinea(15));
+                        bien.dpto(interfaz.leerLinea(100));
+                        interfaz.popup("Departamento actualizado");
                         break;
                     case 3:
+                        interfaz.cabecera("Modificando usuario");
+                        interfaz.limpiar();
+                        interfaz.formulario({ "Usuario: " });
+                        interfaz.mover(5, interfaz.ancho() / 2);
+                        bien.usuario(interfaz.leerLinea(30));
+                        interfaz.popup("Usuario actualizado");
+                        break;  
+                    case 4:
                         interfaz.cabecera("Modificando marca");
                         interfaz.limpiar();
                         interfaz.formulario({ "Marca: " });
                         interfaz.mover(5, interfaz.ancho() / 2);
-                        bien.marca(interfaz.leerLinea(15));
+                        bien.marca(interfaz.leerLinea(30));
+                        interfaz.popup("Marca actualizada");
                         break;
-                    case 4:
+                    case 5:
                         interfaz.cabecera("Modificando modelo");
                         interfaz.limpiar();
                         interfaz.formulario({ "Modelo: " });
                         interfaz.mover(5, interfaz.ancho() / 2);
-                        bien.modelo(interfaz.leerLinea(15));
+                        bien.modelo(interfaz.leerLinea(30));
+                        interfaz.popup("Modelo actualizado");
                         break;
-                    case 5:
+                    case 6:
                         break;
                     default:
                         interfaz.popup("Opción inválida");
